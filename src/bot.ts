@@ -1,7 +1,7 @@
 import { connectToWhatsApp, getSocket, getQR, getStatus, disconnect, deleteSession, ConnectionStatus } from './lib/whatsapp/client';
 import http from 'http';
 
-const PORT = 3001;
+const PORT = 3002;
 
 // Simple keep-alive for the process
 process.on('uncaughtException', (err) => {

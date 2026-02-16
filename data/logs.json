@@ -153,5 +153,29 @@
       "lng": -93.0902328491211
     },
     "locationName": "Casa"
+  },
+  {
+    "id": "6aid5",
+    "userId": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
+    "userName": "aro",
+    "timestamp": "2026-02-16T03:09:53.522Z",
+    "type": "check-in",
+    "location": {
+      "lat": 16.77179718017578,
+      "lng": -93.0902328491211
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "120uj",
+    "userId": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
+    "userName": "aro",
+    "timestamp": "2026-02-16T03:10:37.857Z",
+    "type": "check-out",
+    "location": {
+      "lat": 16.77179718017578,
+      "lng": -93.0902328491211
+    },
+    "locationName": "Casa"
   }
 ]
