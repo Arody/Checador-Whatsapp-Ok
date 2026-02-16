@@ -1,0 +1,157 @@
+[
+  {
+    "id": "y04gkx",
+    "userId": "5e838dd5-abbf-47fa-b168-277ceb34524d",
+    "userName": "dev",
+    "timestamp": "2026-02-16T00:16:31.539Z",
+    "type": "check-in",
+    "location": {
+      "lat": 16.7718024,
+      "lng": -93.0902902
+    }
+  },
+  {
+    "id": "03j5wl",
+    "userId": "5e838dd5-abbf-47fa-b168-277ceb34524d",
+    "userName": "dev",
+    "timestamp": "2026-02-16T00:23:27.055Z",
+    "type": "check-out",
+    "location": {
+      "lat": 16.7717822,
+      "lng": -93.0902734
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "8ryidt",
+    "userId": "5e838dd5-abbf-47fa-b168-277ceb34524d",
+    "userName": "dev",
+    "timestamp": "2026-02-16T00:25:10.007Z",
+    "type": "check-in",
+    "location": {
+      "lat": 16.7717744,
+      "lng": -93.0902692
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "2omak",
+    "userId": "5e838dd5-abbf-47fa-b168-277ceb34524d",
+    "userName": "dev",
+    "timestamp": "2026-02-16T00:30:29.494Z",
+    "type": "check-out",
+    "location": {
+      "lat": 16.7717847,
+      "lng": -93.090278
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "f4jihd",
+    "userId": "859c749b-8ef8-447a-ac9c-99a30330b4cb",
+    "userName": "ada",
+    "timestamp": "2026-02-16T00:46:26.310Z",
+    "type": "check-in",
+    "location": {
+      "lat": 16.771804809570312,
+      "lng": -93.09021759033203
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "d7z6bc",
+    "userId": "859c749b-8ef8-447a-ac9c-99a30330b4cb",
+    "userName": "ada",
+    "timestamp": "2026-02-16T00:48:58.446Z",
+    "type": "check-out",
+    "location": {
+      "lat": 16.771804809570312,
+      "lng": -93.09021759033203
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "kka9vl",
+    "userId": "5e838dd5-abbf-47fa-b168-277ceb34524d",
+    "userName": "dev",
+    "timestamp": "2026-02-16T02:15:30.413Z",
+    "type": "check-in",
+    "location": {
+      "lat": 16.7717769,
+      "lng": -93.090273
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "92zys9",
+    "userId": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
+    "userName": "aro",
+    "timestamp": "2026-02-16T02:27:14.557Z",
+    "type": "check-in",
+    "location": {
+      "lat": 16.77179718017578,
+      "lng": -93.0902328491211
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "taihlo",
+    "userId": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
+    "userName": "aro",
+    "timestamp": "2026-02-16T02:42:08.371Z",
+    "type": "check-out",
+    "location": {
+      "lat": 16.77179718017578,
+      "lng": -93.0902328491211
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "dxhcpj",
+    "userId": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
+    "userName": "aro",
+    "timestamp": "2026-02-16T02:47:48.377Z",
+    "type": "check-in",
+    "location": {
+      "lat": 16.77179718017578,
+      "lng": -93.0902328491211
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "z95x5i",
+    "userId": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
+    "userName": "aro",
+    "timestamp": "2026-02-16T02:49:13.328Z",
+    "type": "check-out",
+    "location": {
+      "lat": 16.77179718017578,
+      "lng": -93.0902328491211
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "4lyad",
+    "userId": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
+    "userName": "aro",
+    "timestamp": "2026-02-16T02:54:42.148Z",
+    "type": "check-in",
+    "location": {
+      "lat": 16.77179718017578,
+      "lng": -93.0902328491211
+    },
+    "locationName": "Casa"
+  },
+  {
+    "id": "5obk45",
+    "userId": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
+    "userName": "aro",
+    "timestamp": "2026-02-16T02:55:27.607Z",
+    "type": "check-out",
+    "location": {
+      "lat": 16.77179718017578,
+      "lng": -93.0902328491211
+    },
+    "locationName": "Casa"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1",
+    "name": "Admin User",
+    "phone": "5211234567890",
+    "role": "admin",
+    "code": "",
+    "active": true
+  },
+  {
+    "id": "5e838dd5-abbf-47fa-b168-277ceb34524d",
+    "name": "dev",
+    "phone": "529613685458",
+    "role": "employee",
+    "code": "dev1989",
+    "active": true,
+    "locationId": "cf39763c-237a-4302-affb-22fa8eb63c64"
+  },
+  {
+    "id": "859c749b-8ef8-447a-ac9c-99a30330b4cb",
+    "name": "ada",
+    "phone": "529612015632",
+    "role": "employee",
+    "code": "ada1986",
+    "active": true,
+    "locationId": "cf39763c-237a-4302-affb-22fa8eb63c64"
+  },
+  {
+    "id": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
+    "name": "aro",
+    "phone": "529611382035",
+    "role": "employee",
+    "code": "aro1989",
+    "active": true,
+    "locationId": "cf39763c-237a-4302-affb-22fa8eb63c64"
+  }
+]
