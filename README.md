@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Checador WhatsApp Kadmiel
 
-## Getting Started
+Sistema de registro de asistencia (Check-in/Check-out) mediante WhatsApp con validación de geocercas (geofencing) y panel de administración.
 
-First, run the development server:
+## 🚀 Estructura del Proyecto
 
+El sistema consta de dos servicios principales que deben ejecutarse simultáneamente:
+
+1.  **Plataforma Web (Next.js)**: Panel de administración para visualizar logs, gestionar usuarios y ubicaciones. (Puerto: `3006`)
+2.  **Bot de WhatsApp (Baileys)**: Proceso independiente que maneja la comunicación con WhatsApp. (Puerto: `3007`)
+
+---
+
+## 🛠️ Instalación y Configuración
+
+### 1. Requisitos Previos
+- Node.js (v18 o superior)
+- npm o yarn
+
+### 2. Instalación de dependencias
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Puertos Configurados
+Este proyecto está pre-configurado para evitar conflictos de puertos:
+- **Web**: `3006`
+- **Bot/API Interna**: `3007`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 💻 Ejecución en Desarrollo
 
-## Learn More
+Para poner en marcha el sistema completo, abre dos terminales:
 
-To learn more about Next.js, take a look at the following resources:
+**Terminal 1: Iniciar la Web**
+```bash
+npm run dev
+```
+Accede a: `http://localhost:3006`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Terminal 2: Iniciar el Bot**
+```bash
+npm run bot
+```
+Sigue las instrucciones en consola para escanear el código QR desde WhatsApp.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🚢 Instrucciones de Despliegue (Producción)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Para desplegar en un servidor (VPS), se recomienda el uso de **PM2** para mantener los procesos activos.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 1. Construir la aplicación Next.js
+```bash
+npm run build
+```
+
+### 2. Iniciar con PM2
+Crea un archivo `ecosystem.config.js` o ejecuta directamente:
+
+```bash
+# Iniciar la plataforma web
+pm2 start npm --name "kadmiel-web" -- start -- -p 3006
+
+# Iniciar el bot de WhatsApp
+pm2 start "npm run bot" --name "kadmiel-bot"
+```
+
+### 3. Consideraciones de Red
+- Asegúrate de que los puertos `3006` y `3007` estén abiertos en el firewall del servidor.
+- Para acceso externo seguro, se recomienda utilizar un proxy inverso como **Nginx** con certificados SSL.
+- La carpeta `wa_auth` guarda la sesión de WhatsApp; asegúrate de que el proceso tenga permisos de escritura.
+
+---
+
+## 👥 Credenciales por Defecto (Admin)
+- **Usuario**: `admin`
+- **Password**: `admin`

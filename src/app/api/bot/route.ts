@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const BOT_API_URL = 'http://localhost:3002';
+const BOT_API_URL = 'http://localhost:3007';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
