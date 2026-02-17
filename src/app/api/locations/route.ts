@@ -1,13 +1,43 @@
 import { NextResponse } from 'next/server';
 import { getLocations, saveLocation } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
+import { cookies } from 'next/headers';
 
 export async function GET() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get('session');
+
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const currentUser = JSON.parse(session.value);
   const locations = await getLocations();
-  return NextResponse.json(locations);
+
+  if (currentUser.role === 'admin') {
+    return NextResponse.json(locations);
+  } else if (currentUser.role === 'manager') {
+    const myLocation = locations.filter(l => l.id === currentUser.locationId);
+    return NextResponse.json(myLocation);
+  } else {
+    return NextResponse.json([]);
+  }
 }
 
 export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const session = cookieStore.get('session');
+
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const currentUser = JSON.parse(session.value);
+
+  if (currentUser.role !== 'admin') {
+    return NextResponse.json({ error: 'Only admins can create locations' }, { status: 403 });
+  }
+
   const body = await request.json();
 
   const lat = parseFloat(String(body.lat).replace(/[^\d.\-]/g, ''));
@@ -30,4 +60,3 @@ export async function POST(request: Request) {
   await saveLocation(location);
   return NextResponse.json(location, { status: 201 });
 }
-

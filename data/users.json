@@ -4,6 +4,8 @@
     "name": "Admin User",
     "phone": "5211234567890",
     "role": "admin",
+    "username": "admin",
+    "password": "admin",
     "code": "",
     "active": true
   },
@@ -33,5 +35,380 @@
     "code": "aro1989",
     "active": true,
     "locationId": "cf39763c-237a-4302-affb-22fa8eb63c64"
+  },
+  {
+    "id": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+    "name": "Abril García",
+    "phone": "5219999999999",
+    "role": "manager",
+    "username": "abril",
+    "password": "Abril_1324",
+    "code": "abril2024",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "b2c3d4e5-f6a7-5b6c-9d0e-1f2a3b4c5d6e",
+    "name": "Ulises",
+    "phone": "529671494536",
+    "role": "manager",
+    "code": "ulises2024",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e",
+    "username": "ulises",
+    "password": "Ulises_1324"
+  },
+  {
+    "id": "c3d4e5f6-a7b8-6c9d-0e1f-2a3b4c5d6e7f",
+    "name": "Abril Aeropuerto",
+    "phone": "5217777777777",
+    "role": "manager",
+    "username": "abril_aeropuerto",
+    "password": "123",
+    "code": "abril_aero",
+    "active": true,
+    "locationId": "d9e3f6a2-0g5h-5b4d-9e3f-2c6g0h8i7j9k"
+  },
+  {
+    "id": "fde38cf8-edd2-45d6-8dd2-a667f2ab2b3b",
+    "name": "ALMA CRISTINA MEGCHUN VAZQUEZ",
+    "phone": "5210000017713654822830",
+    "role": "employee",
+    "code": "alma7588",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "d08f7ce0-b229-4cc2-a375-52933420c163",
+    "name": "ERIK SOLIS LOPEZ",
+    "phone": "5210000017713654822831",
+    "role": "employee",
+    "code": "erik9910",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "f7913b19-ec7b-4892-b23b-88aa3008d8b3",
+    "name": "VICTOR HUGO MARTINEZ VAZQUEZ",
+    "phone": "5210000017713654822832",
+    "role": "employee",
+    "code": "victor7885",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "c8c583f5-59af-44ac-ad54-2a648c6c90b2",
+    "name": "JUAN JESUS TRINIDAD LOPEZ",
+    "phone": "5210000017713654822833",
+    "role": "employee",
+    "code": "juan4286",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "6dbf606f-babd-4350-99d5-eaee63bf5651",
+    "name": "VIVIANA GARCIA BAUTISTA",
+    "phone": "5210000017713654822834",
+    "role": "employee",
+    "code": "viviana9362",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "a1be04db-246d-42c7-96e6-73abc953bf52",
+    "name": "GEMA GUADALUPE SANCHEZ CONSTANTINO",
+    "phone": "5210000017713654822835",
+    "role": "employee",
+    "code": "gema6647",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "58d3089d-f099-4523-bc9c-d4f9c57c166e",
+    "name": "CESAR RICARDO CERVANTES CRUZ",
+    "phone": "5210000017713654822836",
+    "role": "employee",
+    "code": "cesar3053",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "1c31a897-f5d9-410c-b488-303d2d4ec9ab",
+    "name": "ALAN FRANCISCO LUCIO LOPEZ",
+    "phone": "5210000017713654822837",
+    "role": "employee",
+    "code": "alan1088",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "60ea85ec-e531-471a-be20-929486565ff9",
+    "name": "ANA YANCI MANGA PÉREZ",
+    "phone": "5210000017713654822838",
+    "role": "employee",
+    "code": "ana1994",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "b6125fbf-d523-4800-b5c0-bd560cff1448",
+    "name": "YURANI ANTONIA  SÁNCHEZ MOSCOSO",
+    "phone": "5210000017713654822839",
+    "role": "employee",
+    "code": "yurani5754",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "f4bb63fb-e8bc-4b0c-8f79-46d5b5a5a054",
+    "name": " MARIA ALEJANDRA  TORRES PARGA",
+    "phone": "52100000177136548228310",
+    "role": "employee",
+    "code": "5219",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "ec9a805e-ca17-4c6d-b372-50387a337d18",
+    "name": "LAURA MARGARITA ARGUELLO ",
+    "phone": "52100000177136548228311",
+    "role": "employee",
+    "code": "laura7470",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "e2c7e003-9cdd-4be0-bf80-688c04c8eca9",
+    "name": "LESTER GIOVANNI",
+    "phone": "52100000177136548228312",
+    "role": "employee",
+    "code": "lester6520",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "6a8bb4bf-4092-489a-8c50-8ce6b7cf544f",
+    "name": "MARIALI",
+    "phone": "52100000177136548228313",
+    "role": "employee",
+    "code": "mariali6830",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "aada1fe6-0ef7-409d-aec4-214e0189d6bd",
+    "name": "YURIANA GUADALUPE GARCIA MARTINEZ",
+    "phone": "52100000177136548228314",
+    "role": "employee",
+    "code": "yuriana6487",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "2b416b93-eae0-4769-b3a8-835ade4332e6",
+    "name": "CITLALY URBINA",
+    "phone": "52100000177136548228315",
+    "role": "employee",
+    "code": "citlaly4953",
+    "active": true,
+    "locationId": "184055f9-ad92-43b2-903c-f83a573b317e"
+  },
+  {
+    "id": "71a801f4-c835-4265-b3a7-8223345b84de",
+    "name": "FREDY IVAN HERNANDEZ PEREZ",
+    "phone": "52100000177136548228416",
+    "role": "employee",
+    "code": "fredy8303",
+    "active": true,
+    "locationId": "d9e3f6a2-0g5h-5b4d-9e3f-2c6g0h8i7j9k"
+  },
+  {
+    "id": "b465b6ee-32d6-40ad-bff3-5e79e17fc4d1",
+    "name": "ESDRULFO NADIR JONAPA RUIZ",
+    "phone": "52100000177136548228417",
+    "role": "employee",
+    "code": "esdrulfo7714",
+    "active": true,
+    "locationId": "d9e3f6a2-0g5h-5b4d-9e3f-2c6g0h8i7j9k"
+  },
+  {
+    "id": "8620b89b-347c-45b8-807f-b04e23acb7a0",
+    "name": "RODOLFO GUADALUPE PECH FONSECA",
+    "phone": "52100000177136548228418",
+    "role": "employee",
+    "code": "rodolfo6648",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "7567a2c0-b2cb-4cb6-a64b-445f2e1ccb98",
+    "name": "EDUARDO FRANCISCO HERNANDEZ PEREZ",
+    "phone": "52100000177136548228419",
+    "role": "employee",
+    "code": "eduardo5964",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "7d68b1d3-ca3f-4672-9cce-ed36cbc747f2",
+    "name": "FLOR DE ALBA ALFARO TRUJILÑLO",
+    "phone": "52100000177136548228420",
+    "role": "employee",
+    "code": "flor1244",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "97ac09a4-9cc1-43a6-b4e9-d33488620de9",
+    "name": "ANA VICTORIA DIAZ MENDOZA",
+    "phone": "52100000177136548228421",
+    "role": "employee",
+    "code": "ana6973",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "60f1ad62-3bb7-42b3-bf2a-19bdf365e0ee",
+    "name": "LUIS JAVIER DE LA CRUZ COUTIÑO",
+    "phone": "52100000177136548228422",
+    "role": "employee",
+    "code": "luis6648",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "9f3e20ee-83a4-4438-bc0e-a6ac6753bb5d",
+    "name": "JULIA GENOVEVA SILVANO HERNANDEZ",
+    "phone": "52100000177136548228423",
+    "role": "employee",
+    "code": "julia7400",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "e1846ed5-d62c-4e08-bdf4-36486870693e",
+    "name": "BAYRON BRANDON ROBLES ARGUELLO",
+    "phone": "52100000177136548228424",
+    "role": "employee",
+    "code": "bayron9061",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "c1ee465e-9ed7-4876-b05a-904db0d8b98f",
+    "name": "JAZMIN GUADALULPE MARTÍNEZ MÉNDEZ",
+    "phone": "52100000177136548228425",
+    "role": "employee",
+    "code": "jazmin3864",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "f00d6a2c-20d2-4926-a7e4-07684e3bc458",
+    "name": "JUAN ALBERTO SANCHEZ GOMEZ",
+    "phone": "52100000177136548228426",
+    "role": "employee",
+    "code": "juan1119",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "49a85608-ca2a-4f73-a62c-74246a16251f",
+    "name": "ADAN ENRIQUE LÓPEZ RODRÍGUEZ",
+    "phone": "52100000177136548228427",
+    "role": "employee",
+    "code": "adan7067",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "fee4e901-53a6-4873-bb89-17f886179e09",
+    "name": "JONATHAN DE JESUS HERNANDEZ GONZALEZ",
+    "phone": "52100000177136548228428",
+    "role": "employee",
+    "code": "jonathan4645",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "dd30af96-5a1b-4bc7-99cf-6c1c83dae6f7",
+    "name": "CRISTIAN GOMEZ MORALES",
+    "phone": "52100000177136548228429",
+    "role": "employee",
+    "code": "cristian6603",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "8d626b21-d23f-4d01-a061-9290434c00fb",
+    "name": "EFRAIN AGUILAR VAZQUEZ",
+    "phone": "52100000177136548228430",
+    "role": "employee",
+    "code": "efrain4950",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "62c69a75-1d97-4bef-9c4e-0881b2a4b787",
+    "name": "EBER JOSUE VAZQUEZ SANTIZ",
+    "phone": "52100000177136548228431",
+    "role": "employee",
+    "code": "eber7703",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "069dc36a-c8ea-429b-bc68-3f00650e9ccc",
+    "name": "EDGAR EDUARDO MENDEZ LOPEZ",
+    "phone": "52100000177136548228432",
+    "role": "employee",
+    "code": "edgar1548",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "cdbc672b-19df-4068-b918-f8750b38c9bb",
+    "name": "MARTIN ALEJANDRO PEREZ VAZQUEZ",
+    "phone": "52100000177136548228433",
+    "role": "employee",
+    "code": "martin3696",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "58bf1e81-79a8-4dab-8c82-bde37886347f",
+    "name": "DELMAR CRISTIAN NUÑEZ GARCIA",
+    "phone": "52100000177136548228434",
+    "role": "employee",
+    "code": "delmar8733",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "93bd7098-29d1-4c67-86d0-15fbad2556c1",
+    "name": "JOSUE DAVID JIMENEZ HERNANDEZ",
+    "phone": "52100000177136548228435",
+    "role": "employee",
+    "code": "josue9315",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "735e3deb-d350-4735-b625-4718d6245069",
+    "name": "ANDRES AGUILAR VAZQUEZ",
+    "phone": "52100000177136548228436",
+    "role": "employee",
+    "code": "andres8822",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
+  },
+  {
+    "id": "3ce2f8f3-fade-4c63-b4b1-a43ae62703d0",
+    "name": "CECILIA PEREZ GONZALEZ",
+    "phone": "52100000177136548228437",
+    "role": "employee",
+    "code": "cecilia1932",
+    "active": true,
+    "locationId": "c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e"
   }
 ]

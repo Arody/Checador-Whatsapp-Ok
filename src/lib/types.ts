@@ -10,10 +10,12 @@ export interface User {
   id: string;
   name: string;
   phone: string; // Format: 521XXXXXXXXXX
-  role: 'admin' | 'employee';
+  role: 'admin' | 'employee' | 'manager';
   code: string; // Unique code for check-in/out
   active: boolean;
   locationId?: string; // Assigned geofence location
+  username?: string;
+  password?: string;
 }
 
 export interface AttendanceLog {

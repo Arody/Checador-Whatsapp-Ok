@@ -3,17 +3,24 @@ import { useState, useEffect } from 'react';
 import { User, Location } from '@/lib/types';
 
 export default function UserList() {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [newUser, setNewUser] = useState({ name: '', phone: '', birthYear: '', role: 'employee', locationId: '' });
-  const [editingCode, setEditingCode] = useState<string | null>(null); // userId being edited
-  const [codeValue, setCodeValue] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ name: '', phone: '', code: '', role: 'employee' });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchMe();
     fetchUsers();
     fetchLocations();
   }, []);
+
+  async function fetchMe() {
+    const res = await fetch('/api/auth/me');
+    if (res.ok) setCurrentUser(await res.json());
+  }
 
   const generateCode = (name: string, year: string) => {
     if (!name || !year) return '';
@@ -97,16 +104,25 @@ export default function UserList() {
     updateUser({ ...user, locationId: locationId || undefined });
   }
 
-  function startEditCode(user: User) {
-    setEditingCode(user.id);
-    setCodeValue(user.code);
+  function startEdit(user: User) {
+    setEditingId(user.id);
+    setEditForm({
+      name: user.name,
+      phone: user.phone,
+      code: user.code,
+      role: user.role
+    });
   }
 
-  function handleSaveCode(user: User) {
-    if (codeValue.trim()) {
-      updateUser({ ...user, code: codeValue.trim() });
-    }
-    setEditingCode(null);
+  function handleSave(user: User) {
+    updateUser({
+      ...user,
+      name: editForm.name.trim() || user.name,
+      phone: editForm.phone.trim() || user.phone,
+      code: editForm.code.trim() || user.code,
+      role: editForm.role as any
+    });
+    setEditingId(null);
   }
 
   return (
@@ -161,7 +177,7 @@ export default function UserList() {
         <table>
           <thead>
             <tr>
-              <th>Nombre</th>
+                <th>Nombre y Teléfono</th>
               <th>Código</th>
               <th>Ubicación</th>
               <th>Estado</th>
@@ -172,30 +188,55 @@ export default function UserList() {
             {users.map((user) => (
               <tr key={user.id} style={{ opacity: user.active ? 1 : 0.5 }}>
                 <td>
-                  <div>{user.name}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user.phone}</div>
-                </td>
-                <td>
-                  {editingCode === user.id ? (
-                    <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
+                  {editingId === user.id ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                       <input
                         type="text"
-                        value={codeValue}
-                        onChange={(e) => setCodeValue(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSaveCode(user)}
-                        style={{ padding: '0.25rem 0.4rem', fontSize: '0.8rem', marginBottom: 0, width: '120px' }}
-                        autoFocus
+                        value={editForm.name}
+                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                        style={{ padding: '0.25rem', fontSize: '0.9rem', marginBottom: 0 }}
+                        placeholder="Nombre"
                       />
-                      <button onClick={() => handleSaveCode(user)} className="btn btn-primary" style={{ fontSize: '0.7rem', padding: '0.2rem 0.4rem' }}>
-                        ✓
-                      </button>
-                      <button onClick={() => setEditingCode(null)} style={{ fontSize: '0.7rem', padding: '0.2rem 0.4rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                        ✕
-                      </button>
+                      <input
+                        type="text"
+                        value={editForm.phone}
+                        onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                        style={{ padding: '0.25rem', fontSize: '0.8rem', marginBottom: 0 }}
+                        placeholder="Teléfono"
+                      />
+                      {currentUser?.role === 'admin' && (
+                        <select
+                          value={editForm.role}
+                          onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+                          style={{ padding: '0.2rem', fontSize: '0.75rem', marginBottom: 0 }}
+                        >
+                          <option value="employee">Empleado</option>
+                          <option value="manager">Gerente</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      )}
                     </div>
                   ) : (
+                    <div onClick={() => startEdit(user)} style={{ cursor: 'pointer' }} title="Clic para editar">
+                      <div style={{ fontWeight: '500' }}>{user.name}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user.phone}</div>
+                      <div style={{ fontSize: '0.6rem', marginTop: '0.1rem' }}>
+                        <span className="badge" style={{ padding: '1px 4px', background: '#334155', color: '#94a3b8' }}>{user.role}</span>
+                      </div>
+                    </div>
+                  )}
+                </td>
+                <td>
+                  {editingId === user.id ? (
+                    <input
+                      type="text"
+                      value={editForm.code}
+                      onChange={(e) => setEditForm({ ...editForm, code: e.target.value })}
+                      style={{ padding: '0.3rem', fontSize: '0.9rem', marginBottom: 0, width: '100px' }}
+                    />
+                  ) : (
                     <code
-                      onClick={() => startEditCode(user)}
+                        onClick={() => startEdit(user)}
                       style={{ background: '#1e293b', padding: '2px 6px', cursor: 'pointer', borderBottom: '1px dashed var(--text-muted)' }}
                       title="Clic para editar"
                     >
@@ -226,9 +267,20 @@ export default function UserList() {
                   </span>
                 </td>
                 <td>
-                  <button onClick={() => handleDeleteUser(user.id)} className="btn btn-danger" style={{ fontSize: '0.8rem', padding: '0.25rem 0.5rem' }}>
-                    🗑️
-                  </button>
+                  {editingId === user.id ? (
+                    <div style={{ display: 'flex', gap: '0.25rem' }}>
+                      <button onClick={() => handleSave(user)} className="btn btn-primary" style={{ padding: '0.25rem 0.5rem' }}>
+                        Guardar
+                      </button>
+                      <button onClick={() => setEditingId(null)} className="btn" style={{ padding: '0.25rem 0.5rem', background: '#475569' }}>
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                      <button onClick={() => handleDeleteUser(user.id)} className="btn btn-danger" style={{ fontSize: '0.8rem', padding: '0.25rem 0.5rem' }}>
+                        🗑️
+                      </button>
+                  )}
                 </td>
               </tr>
             ))}
