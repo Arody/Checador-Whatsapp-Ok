@@ -7,7 +7,7 @@ export default function DateFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const [date, setDate] = useState(searchParams.get('date') || new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(searchParams.get('date') || new Date().toLocaleDateString('en-CA', { timeZone: 'America/Cancun' }));
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;

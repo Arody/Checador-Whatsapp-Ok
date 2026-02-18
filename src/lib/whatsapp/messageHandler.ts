@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 import path from 'path';
 
 const DEBUG_FILE = path.join(process.cwd(), 'data', 'debug.log');
+const TIMEZONE = 'America/Cancun';
 
 // In-memory sessions: phone -> action info
 interface SessionState {
@@ -14,7 +15,7 @@ interface SessionState {
 const validatedSessions = new Map<string, SessionState>();
 
 function logDebug(txt: string) {
-  const entry = `[${new Date().toISOString()}] ${txt}\n`;
+  const entry = `[${new Date().toLocaleString('es-MX', { timeZone: TIMEZONE })}] ${txt}\n`;
   try { fs.appendFileSync(DEBUG_FILE, entry); } catch (_) { /* ignore */ }
   console.log(txt);
 }
@@ -117,7 +118,7 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
       validatedSessions.delete(phone); // Limpiar sesión
 
       const actionText = session.type === 'check-in' ? 'ENTRADA' : 'SALIDA';
-      const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+      const hora = new Date().toLocaleTimeString('es-MX', { timeZone: TIMEZONE, hour: '2-digit', minute: '2-digit' });
       
       logDebug(`✅ ${actionText} registrada para ${user.name}${locationName ? ` en ${locationName}` : ''}`);
 
@@ -228,7 +229,6 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
 
 // Helper to validate the cycle rules (double check-in, etc)
 async function validateCycle(user: any, type: 'check-in' | 'check-out', remoteJid: string, sock: any): Promise<boolean> {
-    const TIMEZONE = 'America/Cancun'; 
     const now = new Date();
     const mexicoDate = new Date(now.toLocaleString('en-US', { timeZone: TIMEZONE }));
     const todayStr = mexicoDate.toISOString().split('T')[0];
