@@ -176,7 +176,7 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
       try {
         // 1. Download Image
         const buffer = await downloadMediaMessage(
-          msg,
+          msg as any,
           'buffer',
           {}
         );
