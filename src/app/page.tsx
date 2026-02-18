@@ -58,7 +58,7 @@ export default async function Home() {
           </div>
         </div>
         <div>
-          <LogViewer />
+          <LogViewer isAdmin={isAdmin} />
         </div>
       </div>
     </main>

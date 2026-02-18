@@ -94,6 +94,12 @@ export async function getLastLogForUser(userId: string): Promise<AttendanceLog |
   return userLogs[0];
 }
 
+export async function deleteLog(id: string): Promise<void> {
+  const logs = await getLogs();
+  const filtered = logs.filter((l) => l.id !== id);
+  await fs.writeJson(LOGS_FILE, filtered, { spaces: 2 });
+}
+
 // --- Location Operations ---
 
 export async function getLocations(): Promise<Location[]> {

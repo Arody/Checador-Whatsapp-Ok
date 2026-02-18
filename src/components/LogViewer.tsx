@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { AttendanceLog } from '@/lib/types';
 
-export default function LogViewer() {
+export default function LogViewer({ isAdmin }: { isAdmin?: boolean }) {
   const [logs, setLogs] = useState<AttendanceLog[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,6 +23,27 @@ export default function LogViewer() {
       console.error('Failed to fetch logs', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm('¿Estás seguro de que quieres eliminar este registro? Esta acción no se puede deshacer.')) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/logs/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        setLogs(logs.filter((log) => log.id !== id));
+      } else {
+        alert('Error al eliminar el registro');
+      }
+    } catch (error) {
+      console.error('Error deleting log:', error);
+      alert('Error al eliminar el registro');
     }
   }
 
@@ -51,6 +72,7 @@ export default function LogViewer() {
               <th>Tipo</th>
               <th>Hora</th>
               <th>Ubicación</th>
+                {isAdmin && <th>Acciones</th>}
             </tr>
           </thead>
           <tbody>
@@ -76,6 +98,18 @@ export default function LogViewer() {
                     </a>
                   ) : 'N/A'}
                 </td>
+                {isAdmin && (
+                  <td>
+                    <button
+                      onClick={() => handleDelete(log.id)}
+                      className="text-red-500 hover:text-red-700"
+                      title="Eliminar registro"
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}
+                    >
+                      🗑️
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
