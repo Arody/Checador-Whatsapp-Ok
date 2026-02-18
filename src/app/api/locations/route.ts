@@ -60,3 +60,45 @@ export async function POST(request: Request) {
   await saveLocation(location);
   return NextResponse.json(location, { status: 201 });
 }
+
+export async function PUT(request: Request) {
+  const cookieStore = await cookies();
+  const session = cookieStore.get('session');
+
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const currentUser = JSON.parse(session.value);
+
+  if (currentUser.role !== 'admin') {
+    return NextResponse.json({ error: 'Only admins can update locations' }, { status: 403 });
+  }
+
+  const body = await request.json();
+
+  if (!body.id) {
+    return NextResponse.json({ error: 'Location ID is required' }, { status: 400 });
+  }
+
+  const lat = parseFloat(String(body.lat).replace(/[^\d.\-]/g, ''));
+  let lng = parseFloat(String(body.lng).replace(/[^\d.\-]/g, ''));
+
+  // Mexico is in the western hemisphere — longitude must be negative
+  if (lng > 0) lng = -lng;
+
+  if (isNaN(lat) || isNaN(lng)) {
+    return NextResponse.json({ error: 'Coordenadas inválidas' }, { status: 400 });
+  }
+
+  const location = {
+    id: body.id,
+    name: body.name,
+    lat,
+    lng,
+    radiusMeters: parseInt(body.radiusMeters, 10) || 100,
+  };
+
+  await saveLocation(location);
+  return NextResponse.json(location, { status: 200 });
+}

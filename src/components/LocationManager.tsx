@@ -5,6 +5,7 @@ import { Location } from '@/lib/types';
 export default function LocationManager() {
   const [locations, setLocations] = useState<Location[]>([]);
   const [newLoc, setNewLoc] = useState({ name: '', lat: '', lng: '', radiusMeters: '100' });
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => { fetchLocations(); }, []);
@@ -21,23 +22,46 @@ export default function LocationManager() {
     }
   }
 
-  async function handleAddLocation(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!newLoc.name || !newLoc.lat || !newLoc.lng || !newLoc.radiusMeters) return;
 
     try {
+      const method = editingId ? 'PUT' : 'POST';
+      const body = editingId ? { ...newLoc, id: editingId } : newLoc;
+
       const res = await fetch('/api/locations', {
-        method: 'POST',
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newLoc),
+        body: JSON.stringify(body),
       });
+
       if (res.ok) {
         setNewLoc({ name: '', lat: '', lng: '', radiusMeters: '100' });
+        setEditingId(null);
         fetchLocations();
+      } else {
+        const err = await res.json();
+        alert(err.error || 'Error al guardar');
       }
     } catch (error) {
-      console.error('Failed to add location', error);
+      console.error('Failed to save location', error);
     }
+  }
+
+  function startEditing(loc: Location) {
+    setEditingId(loc.id);
+    setNewLoc({
+      name: loc.name,
+      lat: String(loc.lat),
+      lng: String(loc.lng),
+      radiusMeters: String(loc.radiusMeters),
+    });
+  }
+
+  function cancelEditing() {
+    setEditingId(null);
+    setNewLoc({ name: '', lat: '', lng: '', radiusMeters: '100' });
   }
 
   async function handleDeleteLocation(id: string) {
@@ -54,7 +78,7 @@ export default function LocationManager() {
     <div className="card">
       <h2>📍 Ubicaciones</h2>
 
-      <form onSubmit={handleAddLocation} className="grid grid-cols-2" style={{ gap: '0.75rem', marginTop: '1rem' }}>
+      <form onSubmit={handleSubmit} className="grid grid-cols-2" style={{ gap: '0.75rem', marginTop: '1rem' }}>
         <input
           type="text"
           placeholder="Nombre (ej: Oficina Central)"
@@ -89,9 +113,16 @@ export default function LocationManager() {
         <div style={{ alignSelf: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
           Radio: <strong>{newLoc.radiusMeters || '100'}m</strong>
         </div>
-        <button type="submit" className="btn btn-primary" style={{ gridColumn: 'span 2' }}>
-          Agregar Ubicación
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem', gridColumn: 'span 2' }}>
+          <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+            {editingId ? 'Actualizar Ubicación' : 'Agregar Ubicación'}
+          </button>
+          {editingId && (
+            <button type="button" onClick={cancelEditing} className="btn btn-secondary">
+              Cancelar
+            </button>
+          )}
+        </div>
       </form>
 
       {loading ? (
@@ -123,6 +154,13 @@ export default function LocationManager() {
                   <span className="badge badge-success">{loc.radiusMeters}m</span>
                 </td>
                 <td>
+                  <button
+                    onClick={() => startEditing(loc)}
+                    className="btn btn-secondary"
+                    style={{ fontSize: '0.8rem', padding: '0.25rem 0.5rem', marginRight: '0.5rem' }}
+                  >
+                    Editar
+                  </button>
                   <button
                     onClick={() => handleDeleteLocation(loc.id)}
                     className="btn btn-danger"
