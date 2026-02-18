@@ -12,23 +12,11 @@ const LOCATION_MAP = {
   'SAN CRISTOBAL': 'c8d2a5e1-9f4b-4a3c-8d2e-1b5f9a7c6d3e'
 };
 
-const EXCLUSIONS = ['FABIAN', 'ARODI', 'SERGIO', 'ULISES', 'ABRIL'];
-// Edi Aroldo Montejo might be Arodi
-const EXCLUSIONS_FULL = ['EDI AROLDO MONTEJO'];
-
 function normalizeName(name) {
   return name ? name.toString().trim().toUpperCase() : '';
 }
 
 function shouldExclude(name) {
-  const n = normalizeName(name);
-  if (!n) return true;
-  
-  if (EXCLUSIONS_FULL.includes(n)) return true;
-
-  for (const exc of EXCLUSIONS) {
-    if (n.includes(exc)) return true;
-  }
   return false;
 }
 

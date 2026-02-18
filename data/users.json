@@ -11,10 +11,10 @@
   },
   {
     "id": "5e838dd5-abbf-47fa-b168-277ceb34524d",
-    "name": "dev",
+    "name": "Edi Aroldo Montejo",
     "phone": "529613685458",
     "role": "employee",
-    "code": "dev1989",
+    "code": "edi2024",
     "active": true,
     "locationId": "cf39763c-237a-4302-affb-22fa8eb63c64"
   },
@@ -29,10 +29,10 @@
   },
   {
     "id": "5b8bddca-7ad9-4388-9bea-e0c1d10f61d8",
-    "name": "aro",
+    "name": "Arody Paredes Fajardo",
     "phone": "529611382035",
-    "role": "employee",
-    "code": "aro1989",
+    "role": "admin",
+    "code": "arody1989",
     "active": true,
     "locationId": "cf39763c-237a-4302-affb-22fa8eb63c64"
   },
