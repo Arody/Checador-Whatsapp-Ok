@@ -75,8 +75,8 @@ export default async function ReportsPage(props: PageProps) {
                           {isFirst && (
                             <td rowSpan={rowSpan} style={{ verticalAlign: 'top', fontWeight: 600, borderRight: '1px solid var(--border)' }}>{summary.userName}</td>
                           )}
-                          <td>{session.checkIn ? new Date(session.checkIn.timestamp).toLocaleTimeString('es-MX', { timeZone: 'America/Cancun', hour: '2-digit', minute: '2-digit' }) : '-'}</td>
-                          <td>{session.checkOut ? new Date(session.checkOut.timestamp).toLocaleTimeString('es-MX', { timeZone: 'America/Cancun', hour: '2-digit', minute: '2-digit' }) : '-'}</td>
+                          <td>{session.checkIn ? new Date(session.checkIn.timestamp).toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit' }) : '-'}</td>
+                          <td>{session.checkOut ? new Date(session.checkOut.timestamp).toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit' }) : '-'}</td>
                           <td style={{ fontWeight: session.durationMinutes > 0 ? 600 : 400 }}>
                             {session.durationMinutes > 0 ? `${(session.durationMinutes / 60).toFixed(2)} hrs` : '-'}
                           </td>

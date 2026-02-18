@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import path from 'path';
 
 const DEBUG_FILE = path.join(process.cwd(), 'data', 'debug.log');
-const TIMEZONE = 'America/Cancun';
+const TIMEZONE = 'America/Mexico_City';
 
 // In-memory sessions: phone -> action info
 interface SessionState {

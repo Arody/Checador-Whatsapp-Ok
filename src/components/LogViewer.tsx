@@ -28,7 +28,7 @@ export default function LogViewer() {
 
   function formatTime(iso: string) {
     return new Date(iso).toLocaleString('es-MX', { 
-      timeZone: 'America/Cancun',
+      timeZone: 'America/Mexico_City',
       weekday: 'short', 
       year: 'numeric', 
       month: 'short', 

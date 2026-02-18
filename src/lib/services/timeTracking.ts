@@ -15,7 +15,7 @@ export interface UserDailySummary {
   totalHours: number;
 }
 
-const TIMEZONE = 'America/Cancun';
+const TIMEZONE = 'America/Mexico_City';
 
 export function getMexicoDate(dateStr: string | Date): Date {
   const date = new Date(dateStr);
