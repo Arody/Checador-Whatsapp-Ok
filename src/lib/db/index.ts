@@ -96,6 +96,19 @@ export async function getLastLogForUser(userId: string): Promise<AttendanceLog |
 
 export async function deleteLog(id: string): Promise<void> {
   const logs = await getLogs();
+  const logToDelete = logs.find((l) => l.id === id);
+
+  if (logToDelete && logToDelete.selfiePath) {
+    try {
+      const fullPath = path.join(process.cwd(), logToDelete.selfiePath);
+      if (await fs.pathExists(fullPath)) {
+        await fs.remove(fullPath);
+      }
+    } catch (error) {
+      console.error(`Error deleting image for log ${id}:`, error);
+    }
+  }
+
   const filtered = logs.filter((l) => l.id !== id);
   await fs.writeJson(LOGS_FILE, filtered, { spaces: 2 });
 }
