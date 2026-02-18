@@ -4,7 +4,7 @@
     "name": "Teran",
     "lat": 16.756893,
     "lng": -93.164401,
-    "radiusMeters": 30
+    "radiusMeters": 80
   },
   {
     "id": "cf39763c-237a-4302-affb-22fa8eb63c64",
@@ -18,13 +18,13 @@
     "name": "San Cristobal",
     "lat": 16.7366966,
     "lng": -92.6372287,
-    "radiusMeters": 10
+    "radiusMeters": 50
   },
   {
     "id": "d9e3f6a2-0g5h-5b4d-9e3f-2c6g0h8i7j9k",
     "name": "Aeropuerto",
     "lat": 16.5605797,
     "lng": -93.0207159,
-    "radiusMeters": 10
+    "radiusMeters": 50
   }
 ]

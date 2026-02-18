@@ -21,6 +21,23 @@ function logDebug(txt: string) {
   console.log(txt);
 }
 
+// GPS tolerance buffer in meters (accounts for phone GPS inaccuracy)
+const GPS_TOLERANCE_METERS = 30;
+
+/**
+ * Normalize Mexican phone numbers to consistent format: 52XXXXXXXXXX (12 digits).
+ * WhatsApp can send either 521XXXXXXXXXX (13 digits, old mobile format)
+ * or 52XXXXXXXXXX (12 digits). We strip the extra '1' to get a consistent key.
+ */
+function normalizePhone(raw: string): string {
+  const clean = raw.replace(/\+/g, '');
+  // Mexican mobile with extra '1': 521 + 10 digits = 13 chars
+  if (clean.startsWith('521') && clean.length === 13) {
+    return '52' + clean.substring(3);
+  }
+  return clean;
+}
+
 // Haversine formula: returns distance in meters between two lat/lng points
 function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371e3; // Earth's radius in meters
@@ -44,9 +61,10 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
   const isLid = rawJid.endsWith('@lid');
   const phoneJid = (isLid && altJid) ? altJid : rawJid;
   const remoteJid = phoneJid; // Use this for sending replies
-  const phone = phoneJid.split('@')[0];
+  const rawPhone = phoneJid.split('@')[0];
+  const phone = normalizePhone(rawPhone); // Always use normalized phone
 
-  logDebug(`📨 JID: ${rawJid} | Alt: ${altJid || 'N/A'} | Phone usado: ${phone} | PushName: ${msg.pushName}`);
+  logDebug(`📨 JID: ${rawJid} | Alt: ${altJid || 'N/A'} | Raw: ${rawPhone} | Normalizado: ${phone} | PushName: ${msg.pushName}`);
 
   try {
     const messageContent = msg.message?.conversation || msg.message?.extendedTextMessage?.text || '';
@@ -89,13 +107,15 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
         const assignedLocation = await getLocationById(user.locationId);
         if (assignedLocation) {
           const distance = haversineDistance(userLat, userLng, assignedLocation.lat, assignedLocation.lng);
-          logDebug(`📏 Distancia de ${user.name} a "${assignedLocation.name}": ${Math.round(distance)}m (máx: ${assignedLocation.radiusMeters}m)`);
+          const effectiveRadius = assignedLocation.radiusMeters + GPS_TOLERANCE_METERS;
+          logDebug(`📏 Distancia de ${user.name} a "${assignedLocation.name}": ${Math.round(distance)}m (radio: ${assignedLocation.radiusMeters}m + ${GPS_TOLERANCE_METERS}m tolerancia = ${effectiveRadius}m)`);
+          logDebug(`📍 User: (${userLat}, ${userLng}) | Ref: (${assignedLocation.lat}, ${assignedLocation.lng})`);
 
-          if (distance > assignedLocation.radiusMeters) {
+          if (distance > effectiveRadius) {
             await sock.sendMessage(remoteJid, {
               text: `⚠️ *Ups! No estás en tu zona de trabajo.*\n\nHola ${user.name}, intentas registrarte en *${assignedLocation.name}*, pero tu ubicación actual está fuera del área permitida.\n\nPor favor acércate a la zona de trabajo e inténtalo de nuevo. ¡Gracias!`
             });
-            logDebug(`🚫 Geofence rechazado para ${user.name}: ${Math.round(distance)}m > ${assignedLocation.radiusMeters}m`);
+            logDebug(`🚫 Geofence rechazado para ${user.name}: ${Math.round(distance)}m > ${effectiveRadius}m`);
             return;
           }
           locationName = assignedLocation.name;

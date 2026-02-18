@@ -42,23 +42,32 @@ export async function deleteUser(id: string): Promise<void> {
 export async function getUserByPhone(phone: string): Promise<User | undefined> {
   const users = await getUsers();
   
-  // Normalize incoming phone: remove '+' and handle Mexico '521' vs '52'
-  const cleanPhone = phone.replace(/\+/g, '');
+  /**
+   * Extract the 10-digit base number from a Mexican phone.
+   * Handles: +521XXXXXXXXXX, 521XXXXXXXXXX, 52XXXXXXXXXX, XXXXXXXXXX
+   */
+  function extractBase(raw: string): string {
+    const clean = raw.replace(/\+/g, '');
+    if (clean.startsWith('521') && clean.length === 13) {
+      return clean.substring(3); // 521 + 10 digits
+    }
+    if (clean.startsWith('52') && clean.length === 12) {
+      return clean.substring(2); // 52 + 10 digits
+    }
+    if (clean.length === 10) {
+      return clean; // Already 10 digits
+    }
+    return clean; // Fallback: return as-is
+  }
+
+  const incomingBase = extractBase(phone);
   
   return users.find((u) => {
-    const userPhone = u.phone.replace(/\+/g, '');
-    if (userPhone === cleanPhone) return true;
-    
-    // Mexico specific: 521XXXXXXXXXX vs 52XXXXXXXXXX
-    if (userPhone.startsWith('52') && cleanPhone.startsWith('52')) {
-        const baseUser = userPhone.startsWith('521') ? userPhone.substring(3) : userPhone.substring(2);
-        const baseClean = cleanPhone.startsWith('521') ? cleanPhone.substring(3) : cleanPhone.substring(2);
-        return baseUser === baseClean;
-    }
-    
-    return false;
+    const userBase = extractBase(u.phone);
+    return userBase === incomingBase;
   });
 }
+
 
 // --- Log Operations ---
 
