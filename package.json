@@ -10,10 +10,12 @@
     "bot": "tsx src/bot.ts"
   },
   "dependencies": {
+    "@types/mime-types": "^3.0.1",
     "@whiskeysockets/baileys": "^7.0.0-rc.9",
     "fs-extra": "^11.3.3",
     "jimp": "^1.6.0",
     "link-preview-js": "^3.2.0",
+    "mime-types": "^3.0.2",
     "next": "16.1.6",
     "pino": "^10.3.1",
     "pino-pretty": "^13.1.3",

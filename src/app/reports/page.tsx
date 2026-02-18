@@ -59,6 +59,7 @@ export default async function ReportsPage(props: PageProps) {
                   <th>Salida</th>
                   <th>Duración</th>
                   <th>Estado</th>
+                <th>Evidencia</th>
                 </tr>
               </thead>
               <tbody>
@@ -85,18 +86,44 @@ export default async function ReportsPage(props: PageProps) {
                               {session.status === 'complete' ? 'Completado' : session.status === 'missing_out' ? '⚠️ Sin Salida' : '⚠️ Sin Entrada'}
                             </span>
                           </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                              {session.checkIn?.selfiePath && (
+                                <a href={`/api/uploads?path=${session.checkIn.selfiePath}`} target="_blank" rel="noopener noreferrer">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={`/api/uploads?path=${session.checkIn.selfiePath}`}
+                                    alt="Entrada"
+                                    style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '2px solid #22c55e' }}
+                                    title="Foto de Entrada"
+                                  />
+                                </a>
+                              )}
+                              {session.checkOut?.selfiePath && (
+                                <a href={`/api/uploads?path=${session.checkOut.selfiePath}`} target="_blank" rel="noopener noreferrer">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={`/api/uploads?path=${session.checkOut.selfiePath}`}
+                                    alt="Salida"
+                                    style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '2px solid #ef4444' }}
+                                    title="Foto de Salida"
+                                  />
+                                </a>
+                              )}
+                            </div>
+                          </td>
                         </tr>
                       );
                    })
                 ))}
                 {summaries.length === 0 && (
-                    <tr><td colSpan={6} style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>No hay registros para la fecha seleccionada.</td></tr>
+                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>No hay registros para la fecha seleccionada.</td></tr>
                 )}
                 
                  {/* Total Row */}
                  {summaries.length > 0 && (
                     <tr style={{ background: 'var(--surface)', fontWeight: 700, borderTop: '2px solid var(--border)' }}>
-                        <td colSpan={4} style={{ textAlign: 'right', paddingRight: '1rem' }}>Total Horas en vista:</td>
+                  <td colSpan={5} style={{ textAlign: 'right', paddingRight: '1rem' }}>Total Horas en vista:</td>
                         <td colSpan={2} style={{ color: 'var(--primary)', fontSize: '1.1rem' }}>{totalHours.toFixed(2)} hrs</td>
                     </tr>
                  )}
