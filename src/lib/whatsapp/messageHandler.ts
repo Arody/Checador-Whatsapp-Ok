@@ -1,6 +1,7 @@
 import { WASocket, proto } from '@whiskeysockets/baileys';
-import { getUserByPhone, addLog, getLastLogForUser, getLocationById } from '../db';
+import { getUserByPhone, addLog, getLastLogForUser, getLocationById, getLogs } from '../db';
 import { AttendanceLog } from '../types';
+import { getUserMonthlyReport } from '../services/timeTracking';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -191,8 +192,48 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
         return;
     }
 
-    // B. Legacy/Fallback: Check for Prefix E/S
+    // B. Legacy/Fallback: Check for Prefix E/S or I (Info)
     const prefix = cleanText.charAt(0);
+
+    // --- Caso 4: Reporte Mensual (I + Código) ---
+    if (prefix === 'I') {
+      const codeSent = text.substring(1).trim();
+      const userByPhone = await getUserByPhone(phone);
+
+      if (!userByPhone || !userByPhone.active) return;
+
+      if (codeSent === userByPhone.code) {
+        const logs = await getLogs();
+        const report = getUserMonthlyReport(logs, userByPhone.id);
+
+        if (report.totalHours === 0) {
+          await sock.sendMessage(remoteJid, {
+            text: `📅 *Reporte Mensual: ${report.monthName}*\n\nHola ${userByPhone.name}, aún no tienes horas registradas este mes.`
+          });
+          return;
+        }
+
+        let message = `📅 *Reporte Mensual: ${report.monthName}*\n`;
+        message += `👤 ${userByPhone.name}\n\n`;
+        message += `*Desglose por día:*\n`;
+
+        report.days.forEach(day => {
+          // Format Date: 2024-05-20 -> Lun 20
+          const dateObj = new Date(day.date + 'T12:00:00'); // Safe middle of day
+          const dateStr = dateObj.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', timeZone: TIMEZONE });
+          message += `• ${dateStr}:  *${day.hours} hrs*\n`;
+        });
+
+        message += `\n📊 *TOTAL MES: ${report.totalHours} hrs*`;
+
+        await sock.sendMessage(remoteJid, { text: message });
+        logDebug(`✅ Reporte mensual enviado a ${userByPhone.name}`);
+      } else {
+        logDebug(`❌ Código erróneo para reporte de ${userByPhone?.name}`);
+      }
+      return;
+    }
+
     if (prefix !== 'E' && prefix !== 'S') {
       return; 
     }

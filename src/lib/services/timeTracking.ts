@@ -111,3 +111,70 @@ export function calculateDailySummaries(logs: AttendanceLog[], users: User[]): U
     // Sort by date desc
     return summaries.sort((a, b) => b.date.localeCompare(a.date));
 }
+
+export function getUserMonthlyReport(logs: AttendanceLog[], userId: string): {
+    userName: string;
+    monthName: string;
+    days: { date: string; hours: number }[];
+    totalHours: number
+} {
+    // 1. Filter logs for this user
+    const userLogs = logs.filter(l => l.userId === userId);
+    if (userLogs.length === 0) {
+        return { userName: '', monthName: '', days: [], totalHours: 0 };
+    }
+
+    // 2. Identify current month in Mexico Time
+    const now = new Date();
+    const mexicoNow = new Date(now.toLocaleString('en-US', { timeZone: TIMEZONE }));
+    const currentMonth = mexicoNow.getMonth(); // 0-11
+    const currentYear = mexicoNow.getFullYear();
+
+    const monthName = mexicoNow.toLocaleDateString('es-MX', { month: 'long', year: 'numeric', timeZone: TIMEZONE });
+
+    // 3. Filter logs for THIS month only
+    const startOfMonth = new Date(currentYear, currentMonth, 1);
+    const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+
+    // Helper: is log in current month (Mexico time)?
+    const currentMonthLogs = userLogs.filter(l => {
+        const logDateV = new Date(l.timestamp);
+        const logMexico = new Date(logDateV.toLocaleString('en-US', { timeZone: TIMEZONE }));
+        return logMexico.getMonth() === currentMonth && logMexico.getFullYear() === currentYear;
+    });
+
+    if (currentMonthLogs.length === 0) {
+        return { userName: userLogs[0].userName, monthName, days: [], totalHours: 0 };
+    }
+
+    // 4. Calculate daily summaries using existing logic
+    // We create a dummy user object just to satisfy the function signature
+    const dummyUser: User = {
+        id: userId,
+        name: userLogs[0].userName,
+        phone: '',
+        role: 'employee',
+        code: '',
+        active: true
+    };
+
+    const dailySummaries = calculateDailySummaries(currentMonthLogs, [dummyUser]);
+
+    // 5. Transform to simple format
+    const days = dailySummaries.filter(d => d.totalHours > 0).map(s => ({
+        date: s.date, // Already formatted YYYY-MM-DD
+        hours: s.totalHours
+    }));
+
+    // Sort by date asc (oldest first)
+    days.sort((a, b) => a.date.localeCompare(b.date));
+
+    const totalHours = days.reduce((sum, d) => sum + d.hours, 0);
+
+    return {
+        userName: dummyUser.name,
+        monthName,
+        days,
+        totalHours: Number(totalHours.toFixed(2))
+    };
+}
