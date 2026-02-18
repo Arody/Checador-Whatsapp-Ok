@@ -1,17 +1,31 @@
-import { WASocket, proto } from '@whiskeysockets/baileys';
+import { WASocket, proto, downloadMediaMessage } from '@whiskeysockets/baileys';
 import { getUserByPhone, addLog, getLastLogForUser, getLocationById, getLogs } from '../db';
 import { AttendanceLog } from '../types';
 import { getUserMonthlyReport } from '../services/timeTracking';
 import fs from 'fs-extra';
 import path from 'path';
+import sharp from 'sharp';
 
 const DEBUG_FILE = path.join(process.cwd(), 'data', 'debug.log');
+const IMG_DIR = path.join(process.cwd(), 'data', 'img');
 const TIMEZONE = 'America/Mexico_City';
+
+// Ensure image directory exists
+fs.ensureDirSync(IMG_DIR);
 
 // In-memory sessions: phone -> action info
 interface SessionState {
   type: 'check-in' | 'check-out';
   code: string;
+  // Steps: 
+  // 1. Initial (waiting for location)
+  // 2. LocationReceived (waiting for selfie)
+  step?: 'waiting_location' | 'waiting_selfie';
+  tempLocation?: {
+    lat: number;
+    lng: number;
+    name?: string;
+  };
 }
 const validatedSessions = new Map<string, SessionState>();
 
@@ -70,6 +84,7 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
     const messageContent = msg.message?.conversation || msg.message?.extendedTextMessage?.text || '';
     const locationMessage = msg.message?.locationMessage;
     const liveLocationMessage = msg.message?.liveLocationMessage;
+    const imageMessage = msg.message?.imageMessage;
 
     // --- Caso 0: Rechazar Ubicación en Tiempo Real ---
     if (liveLocationMessage) {
@@ -82,15 +97,18 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
       return;
     }
 
-    // --- Caso 1: Recepción de Ubicación (Completar proceso) ---
+    // --- Caso 1: Recepción de Ubicación (Validar y Pedir Foto) ---
     if (locationMessage) {
       if (!validatedSessions.has(phone)) {
-        // Si manda ubicación sin sesión previa válida, ignoramos silenciosamente
         logDebug(`📍 Ubicación ignorada de ${phone} (sin sesión activa)`);
         return;
       }
 
       const session = validatedSessions.get(phone)!;
+
+      // If we are already waiting for selfie, ignore extra locations
+      if (session.step === 'waiting_selfie') return;
+
       const user = await getUserByPhone(phone); // Re-verificar usuario por seguridad
       
       if (!user) {
@@ -122,30 +140,99 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
         }
       }
 
-      const log: AttendanceLog = {
-        id: Math.random().toString(36).substring(7),
-        userId: user.id,
-        userName: user.name,
-        timestamp: new Date().toISOString(),
-        type: session.type, // Usar el tipo capturado del prefijo (E/S)
-        location: {
-          lat: userLat,
-          lng: userLng
-        },
-        locationName,
+      // --- SAVE LOCATION TO SESSION & ASK FOR PHOTO ---
+      session.step = 'waiting_selfie';
+      session.tempLocation = {
+        lat: userLat,
+        lng: userLng,
+        name: locationName
       };
+      validatedSessions.set(phone, session);
 
-      await addLog(log);
-      validatedSessions.delete(phone); // Limpiar sesión
-
-      const actionText = session.type === 'check-in' ? 'ENTRADA' : 'SALIDA';
-      const hora = new Date().toLocaleTimeString('es-MX', { timeZone: TIMEZONE, hour: '2-digit', minute: '2-digit' });
-      
-      logDebug(`✅ ${actionText} registrada para ${user.name}${locationName ? ` en ${locationName}` : ''}`);
+      logDebug(`📍 Ubicación válida de ${user.name}. Solicitando selfie.`);
 
       await sock.sendMessage(remoteJid, {
-        text: `✅ *¡${actionText} REGISTRADA CON ÉXITO!*\n\nHola ${user.name}, hemos guardado tu registro a las *${hora}*.\n\n¡Que tengas un excelente día! ✨`
+        text: `✅ Ubicación confirmada.\n\n📸 *Ahora, por favor envíame una selfie para completar tu registro.*\n\nAsegúrate de que tu rostro se vea claramente.`
       });
+      return;
+    }
+
+    // --- Caso 1.5: Recepción de Foto (Completar Registro) ---
+    if (imageMessage) {
+      if (!validatedSessions.has(phone)) return;
+
+      const session = validatedSessions.get(phone)!;
+
+      // Only process if we are waiting for selfie
+      if (session.step !== 'waiting_selfie' || !session.tempLocation) {
+        return;
+      }
+
+      const user = await getUserByPhone(phone);
+      if (!user) return;
+
+      logDebug(`📸 Recibiendo foto de ${user.name}... procesando.`);
+
+      try {
+        // 1. Download Image
+        const buffer = await downloadMediaMessage(
+          msg,
+          'buffer',
+          {}
+        );
+
+        // 2. Process & Compress (Target < 60KB)
+        // Resize to max width 600px, JPEG quality 60
+        const compressedBuffer = await sharp(buffer)
+          .resize(600, null, { withoutEnlargement: true }) // Max width 600, maintain aspect ratio
+          .jpeg({ quality: 60, progressive: true })
+          .toBuffer();
+
+        // 3. Save to File System
+        const userDir = path.join(IMG_DIR, user.id);
+        await fs.ensureDir(userDir);
+
+        const fileName = `${Date.now()}.jpg`;
+        const filePath = path.join(userDir, fileName);
+        const relativePath = `data/img/${user.id}/${fileName}`; // For DB
+
+        await fs.writeFile(filePath, compressedBuffer);
+
+        logDebug(`💾 Foto guardada: ${relativePath} (${(compressedBuffer.length / 1024).toFixed(2)} KB)`);
+
+    // 4. Create Log
+        const log: AttendanceLog = {
+          id: Math.random().toString(36).substring(7),
+          userId: user.id,
+          userName: user.name,
+          timestamp: new Date().toISOString(),
+          type: session.type,
+          location: {
+            lat: session.tempLocation.lat,
+            lng: session.tempLocation.lng
+          },
+          locationName: session.tempLocation.name,
+          selfiePath: relativePath
+        };
+
+        await addLog(log);
+        validatedSessions.delete(phone); // Clear session
+
+        const actionText = session.type === 'check-in' ? 'ENTRADA' : 'SALIDA';
+        const hora = new Date().toLocaleTimeString('es-MX', { timeZone: TIMEZONE, hour: '2-digit', minute: '2-digit' });
+
+        logDebug(`✅ ${actionText} registrada FINALIZADA para ${user.name}`);
+
+        await sock.sendMessage(remoteJid, {
+          text: `✅ *¡${actionText} REGISTRADA CON ÉXITO!*\n\nHola ${user.name}, hemos guardado tu ubicación y foto a las *${hora}*.\n\n¡Que tengas un excelente día! ✨`
+        });
+
+      } catch (err) {
+        logDebug(`💥 Error procesando imagen de ${user.name}: ${err}`);
+        await sock.sendMessage(remoteJid, {
+          text: `⚠️ Error al procesar tu foto. Por favor inténtalo de nuevo.`
+        });
+      }
       return;
     }
 
@@ -168,7 +255,7 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
       const allowed = await validateCycle(user, type, remoteJid, sock);
       if (!allowed) return;
 
-      validatedSessions.set(phone, { type, code: user.code });
+      validatedSessions.set(phone, { type, code: user.code, step: 'waiting_location' });
       logDebug(`✅ Botón "${buttonResponse}" seleccionado por ${user.name}. Esperando ubicación.`);
       
       const actionLabel = type === 'check-in' ? 'Entrada' : 'Salida';
@@ -267,7 +354,7 @@ export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) 
       const allowed = await validateCycle(userByPhone, type, remoteJid, sock);
       if (!allowed) return;
 
-      validatedSessions.set(phone, { type, code: codeSent });
+      validatedSessions.set(phone, { type, code: codeSent, step: 'waiting_location' });
       
       logDebug(`✅ Código válido (${type}) de ${userByPhone.name}. Esperando ubicación.`);
 

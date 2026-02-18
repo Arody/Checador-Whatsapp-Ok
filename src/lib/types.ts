@@ -29,4 +29,5 @@ export interface AttendanceLog {
     lng: number;
   };
   locationName?: string; // Geofence location name (denormalized)
+  selfiePath?: string; // Path to saved selfie image (relative to public or data dir)
 }
