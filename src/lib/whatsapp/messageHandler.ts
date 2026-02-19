@@ -2,6 +2,7 @@ import { WASocket, proto, downloadMediaMessage } from '@whiskeysockets/baileys';
 import { getUserByPhone, addLog, getLastLogForUser, getLocationById, getLogs } from '../db';
 import { AttendanceLog } from '../types';
 import { getUserMonthlyReport } from '../services/timeTracking';
+import { resolveJid, registerContact } from './lidResolver';
 import fs from 'fs-extra';
 import path from 'path';
 import sharp from 'sharp';
@@ -63,22 +64,44 @@ function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+
 export async function handleMessage(sock: WASocket, msg: proto.IWebMessageInfo) {
   if (!msg.key || !msg.key.remoteJid) return;
 
-  // WhatsApp now sends LID (Linked Identity) as remoteJid.
-  // The real phone number is in remoteJidAlt (e.g. "5219613685458@s.whatsapp.net").
+  // --- LID Resolution: Cascading Fallback Strategy ---
   const rawJid = msg.key.remoteJid;
   const altJid = (msg.key as any).remoteJidAlt as string | undefined;
-
-  // Use altJid (real phone) if the primary is a LID, otherwise use rawJid
   const isLid = rawJid.endsWith('@lid');
-  const phoneJid = (isLid && altJid) ? altJid : rawJid;
-  const remoteJid = phoneJid; // Use this for sending replies
-  const rawPhone = phoneJid.split('@')[0];
-  const phone = normalizePhone(rawPhone); // Always use normalized phone
 
-  logDebug(`📨 JID: ${rawJid} | Alt: ${altJid || 'N/A'} | Raw: ${rawPhone} | Normalizado: ${phone} | PushName: ${msg.pushName}`);
+  let phoneJid: string;
+
+  if (!isLid) {
+    // Case 1: Normal phone JID — use directly
+    phoneJid = rawJid;
+  } else if (altJid && altJid.endsWith('@s.whatsapp.net')) {
+    // Case 2: LID but altJid available — use altJid and register for future
+    phoneJid = altJid;
+    registerContact(rawJid, altJid);
+  } else {
+    // Case 3: LID with no altJid — try lidResolver map
+    const resolved = resolveJid(rawJid);
+    if (resolved) {
+      phoneJid = resolved;
+      logDebug(`📇 LID resuelto desde mapa: ${rawJid} → ${phoneJid}`);
+    } else {
+      // Case 4: All strategies failed — log and return
+      logDebug(`⚠️ LID NO RESUELTO: ${rawJid} | Alt: ${altJid || 'N/A'} | PushName: ${msg.pushName || 'Desconocido'}`);
+      logDebug(`   Mensaje ignorado. El contacto debe ser sincronizado primero.`);
+      return;
+    }
+  }
+
+  // Use rawJid for replies (Baileys routes via LID correctly)
+  const remoteJid = isLid ? rawJid : phoneJid;
+  const rawPhone = phoneJid.split('@')[0];
+  const phone = normalizePhone(rawPhone);
+
+  logDebug(`📨 JID: ${rawJid} | Alt: ${altJid || 'N/A'} | Resuelto: ${phoneJid} | Normalizado: ${phone} | PushName: ${msg.pushName}`);
 
   try {
     const messageContent = msg.message?.conversation || msg.message?.extendedTextMessage?.text || '';

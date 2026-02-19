@@ -10,6 +10,7 @@ import path from 'path';
 import pino from 'pino';
 import fs from 'fs-extra';
 import { handleMessage } from '@/lib/whatsapp/messageHandler';
+import * as lidResolver from '@/lib/whatsapp/lidResolver';
 
 const AUTH_FOLDER = path.join(process.cwd(), 'wa_auth');
 
@@ -71,6 +72,9 @@ export async function connectToWhatsApp() {
   status = 'connecting';
 
   try {
+    // Load LID map from disk before connecting
+    await lidResolver.loadFromDisk();
+
     const { state, saveCreds } = await useMultiFileAuthState(AUTH_FOLDER);
 
     // Close any existing socket before creating a new one
@@ -166,6 +170,15 @@ export async function connectToWhatsApp() {
     });
 
     sock.ev.on('creds.update', saveCreds);
+
+    // --- LID Resolution: Listen for contact sync events ---
+    sock.ev.on('contacts.upsert', (contacts) => {
+      lidResolver.handleContactsUpsert(contacts);
+    });
+
+    sock.ev.on('contacts.update', (contacts) => {
+      lidResolver.handleContactsUpsert(contacts);
+    });
 
     sock.ev.on('messages.upsert', async (m) => {
       if (m.type === 'notify') {
